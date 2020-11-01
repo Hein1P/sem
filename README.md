@@ -1,1 +1,1 @@
-HH
+[![Build Status](https://travis-ci.org/Hein1P/sem.svg?branch=master)](https://travis-ci.org/Hein1P/sem)
