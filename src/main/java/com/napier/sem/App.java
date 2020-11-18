@@ -133,8 +133,7 @@ public class App {
             Statement stmt = con.createStatement();
             // Create string for SQL statement
             String strSelect =
-                    "SELECT *" +
-                            "FROM employees WHERE employee.emp_no=" + n ;
+                    "SELECT * FROM employees WHERE employees.emp_no=" + n ;
             // Execute SQL statement
             ResultSet rset = stmt.executeQuery(strSelect);
             // Extract employee information
@@ -148,7 +147,7 @@ public class App {
             return null;
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            System.out.println("Failed to get salary details");
+            System.out.println("Failed to get employee details");
             return null;
         }
     }
