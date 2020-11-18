@@ -165,19 +165,91 @@ public class App {
 
 
     }
+    /**
+     * Gets all the current employees and salaries.
+     *
+     * @return A list of all employees and salaries, or null if there is an error.
+     */
+    public ArrayList<Employee> getsalarybydept() {
+        try {
+            // Create an SQL statement
+            Statement stmt = con.createStatement();
+            // Create string for SQL statement
+            String strSelect =
+                    "SELECT employees.emp_no, employees.first_name, employees.last_name, salaries.salary\n" +
+                            "FROM employees, salaries, dept_emp, departments\n" +
+                            "WHERE employees.emp_no = salaries.emp_no\n" +
+                            "AND employees.emp_no = dept_emp.emp_no\n" +
+                            "AND dept_emp.dept_no = departments.dept_no\n" +
+                            "AND salaries.to_date = '9999-01-01'\n" +
+                            "AND departments.dept_no = '<dept_no>'\n" +
+                            "ORDER BY employees.emp_no ASC";
+            // Execute SQL statement
+            ResultSet rset = stmt.executeQuery(strSelect);
+            // Extract employee information
+            ArrayList<Employee> employees = new ArrayList<Employee>();
+            while (rset.next()) {
+                Employee emp = new Employee();
+                emp.emp_no = rset.getInt("employees.emp_no");
+                emp.first_name = rset.getString("employees.first_name");
+                emp.last_name = rset.getString("employees.last_name");
+                emp.salary = rset.getInt("salaries.salary");
+                employees.add(emp);
+            }
+            return employees;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get salary details");
+            return null;
+        }
+    }
 
+    /**
+     * Prints a list of employees.
+     *
+     * @param employees The list of employees to print.
+     */
+    public void printdept(ArrayList<Employee> depts)
+    {
+        // Check employees is not null
+        if (depts == null)
+        {
+            System.out.println("no depts");
+            return;
+        }
+        // Print header
+        System.out.println(String.format("%-10s %-15s %-20s %-10s", "Emp No", "First Name", "Last Name", "Salary"));
+        // Loop over all employees in the list
+        for (Employee emp : depts)
+        {
+            if (emp == null)
+                continue;
+            String emp_string =
+                    String.format("%-10s %-15s %-20s %-10s",
+                            emp.emp_no, emp.first_name, emp.last_name, emp.salary);
+            System.out.println(emp_string);
+        }
+    }
     public static void main(String[] args) {
         // Create new Application
         App a = new App();
 
         // Connect to database
-        a.connect("localhost:33061");
+        if (args.length < 1)
+        {
+            a.connect("localhost:3306");
+        }
+        else
+        {
+            a.connect(args[0]);
+        }
 
         ArrayList<Employee> employees = a.getAllSalaries();
         a.printSalaries(employees);
         Employee emp = a.getEmployee(255530);
         // Display results
         a.printEmployee(emp);
+
         // Disconnect from database
         a.disconnect();
     }
