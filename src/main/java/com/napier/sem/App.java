@@ -114,20 +114,58 @@ public class App {
             return;
         }
         // Print header
-        System.out.println(String.format("%-10s %-15s %-20s %-8s", "Emp No", "First Name", "Last Name", "Salary"));
+        System.out.println(String.format("%-10s %-15s %-20s ", "Emp No", "First Name", "Last Name"));
         // Loop over all employees in the list
         for (Employee emp : employees)
         {
             if (emp == null)
                 continue;
             String emp_string =
-                    String.format("%-10s %-15s %-20s %-8s",
-                            emp.emp_no, emp.first_name, emp.last_name, emp.salary);
+                    String.format("%-10s %-15s %-20s",
+                            emp.emp_no, emp.first_name, emp.last_name);
             System.out.println(emp_string);
         }
     }
 
+    public Employee getEmployee(int n) {
+        try {
+            // Create an SQL statement
+            Statement stmt = con.createStatement();
+            // Create string for SQL statement
+            String strSelect =
+                    "SELECT *" +
+                            "FROM employees WHERE employee.emp_no=" + n ;
+            // Execute SQL statement
+            ResultSet rset = stmt.executeQuery(strSelect);
+            // Extract employee information
+            if (rset.next()) {
+                Employee emp = new Employee();
+                emp.emp_no = rset.getInt("employees.emp_no");
+                emp.first_name = rset.getString("employees.first_name");
+                emp.last_name = rset.getString("employees.last_name");
+                return emp;
+            }
+            return null;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get salary details");
+            return null;
+        }
+    }
 
+    /**
+     * Prints a list of employees.
+     *
+     * @param employees The list of employees to print.
+     */
+    public void printEmployee(Employee emp)
+    {
+            if (emp != null){
+                System.out.println(emp.emp_no+" "+ emp.first_name+" " +emp.last_name);
+            }
+
+
+    }
 
     public static void main(String[] args) {
         // Create new Application
@@ -138,7 +176,9 @@ public class App {
 
         ArrayList<Employee> employees = a.getAllSalaries();
         a.printSalaries(employees);
-
+        Employee emp = a.getEmployee(255530);
+        // Display results
+        a.printEmployee(emp);
         // Disconnect from database
         a.disconnect();
     }
