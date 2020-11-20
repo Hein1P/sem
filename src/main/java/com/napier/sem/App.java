@@ -249,7 +249,7 @@ public class App {
         Employee emp = a.getEmployee(255530);
         // Display results
         a.printEmployee(emp);
-
+        System.out.println("GROUP3");
         // Disconnect from database
         a.disconnect();
     }
